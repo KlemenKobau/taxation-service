@@ -6,19 +6,20 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class PlayDto {
+
     @NotNull
-    private int traderId;
+    private long traderId;
     @NotNull
     private int playedAmount;
     @NotNull
     @Digits(integer = Integer.MAX_VALUE, fraction = 2)
     private BigDecimal odd;
 
-    public int getTraderId() {
+    public long getTraderId() {
         return traderId;
     }
 
-    public void setTraderId(int traderId) {
+    public void setTraderId(long traderId) {
         this.traderId = traderId;
     }
 
