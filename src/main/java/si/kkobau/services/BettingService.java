@@ -2,11 +2,15 @@ package si.kkobau.services;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.jboss.resteasy.reactive.common.NotImplementedYet;
+import jakarta.validation.Valid;
 import si.kkobau.api.models.BetReturnInfoDto;
 import si.kkobau.api.models.PlayDto;
+import si.kkobau.data.entities.Country;
+import si.kkobau.data.entities.TaxationRule;
 import si.kkobau.data.entities.Trader;
 import si.kkobau.data.repositories.TraderRepository;
+
+import java.math.BigDecimal;
 
 @ApplicationScoped
 public class BettingService {
@@ -18,8 +22,71 @@ public class BettingService {
         this.traderRepository = traderRepository;
     }
 
-    public BetReturnInfoDto processPlay(PlayDto playDto) {
+    public @Valid BetReturnInfoDto processPlay(PlayDto playDto) {
         Trader trader = traderRepository.findById(playDto.getTraderId());
-        throw new NotImplementedYet();
+        Country country = trader.getCountry();
+
+        TaxationRule taxationRule = country.getTaxationRule();
+        BigDecimal taxAmount = country.getTaxAmount();
+        BigDecimal taxRate = country.getTaxRate();
+
+        BetReturnInfoDto betReturnInfoDto = new BetReturnInfoDto();
+        betReturnInfoDto.setTaxAmount(taxAmount);
+        betReturnInfoDto.setTaxRate(taxRate);
+        BigDecimal beforeTax = playDto.getPlayedAmount().multiply(playDto.getOdd());
+        betReturnInfoDto.setPossibleReturnAmountBefTax(beforeTax);
+
+        return switch (taxationRule) {
+            case GENERAL_RATE -> processGeneralRate(betReturnInfoDto);
+            case GENERAL_AMOUNT -> processGeneralAmount(betReturnInfoDto);
+            case WINNINGS_RATE -> processWinningsRate(betReturnInfoDto, playDto.getPlayedAmount());
+            case WINNINGS_AMOUNT -> processWinningsAmount(betReturnInfoDto, playDto.getPlayedAmount());
+        };
+    }
+
+    private BetReturnInfoDto processGeneralRate(BetReturnInfoDto betReturnInfoDto) {
+        BigDecimal taxRate = betReturnInfoDto.getTaxRate();
+        BigDecimal beforeTax = betReturnInfoDto.getPossibleReturnAmountBefTax();
+
+        BigDecimal taxAmount = taxRate.multiply(beforeTax);
+        BigDecimal afterTax = beforeTax.subtract(taxAmount);
+
+        betReturnInfoDto.setPossibleReturnAmountAfterTax(afterTax);
+
+        return betReturnInfoDto;
+    }
+
+    private BetReturnInfoDto processGeneralAmount(BetReturnInfoDto betReturnInfoDto) {
+        BigDecimal taxAmount = betReturnInfoDto.getTaxAmount();
+        BigDecimal beforeTax = betReturnInfoDto.getPossibleReturnAmountBefTax();
+
+        BigDecimal afterTax = beforeTax.subtract(taxAmount);
+        betReturnInfoDto.setPossibleReturnAmountAfterTax(afterTax);
+
+        return betReturnInfoDto;
+    }
+
+    private BetReturnInfoDto processWinningsRate(BetReturnInfoDto betReturnInfoDto, BigDecimal amountPlayed) {
+        BigDecimal taxRate = betReturnInfoDto.getTaxRate();
+        BigDecimal beforeTax = betReturnInfoDto.getPossibleReturnAmountBefTax();
+        BigDecimal winnings = beforeTax.subtract(amountPlayed);
+
+        BigDecimal taxAmount = taxRate.multiply(winnings);
+        BigDecimal afterTax = beforeTax.subtract(taxAmount);
+
+        betReturnInfoDto.setPossibleReturnAmountAfterTax(afterTax);
+
+        return betReturnInfoDto;
+    }
+
+    private BetReturnInfoDto processWinningsAmount(BetReturnInfoDto betReturnInfoDto, BigDecimal amountPlayed) {
+        BigDecimal taxAmount = betReturnInfoDto.getTaxAmount();
+        BigDecimal beforeTax = betReturnInfoDto.getPossibleReturnAmountBefTax();
+        BigDecimal winnings = beforeTax.subtract(amountPlayed);
+
+        BigDecimal afterTax = winnings.subtract(taxAmount);
+        betReturnInfoDto.setPossibleReturnAmountAfterTax(afterTax);
+
+        return betReturnInfoDto;
     }
 }

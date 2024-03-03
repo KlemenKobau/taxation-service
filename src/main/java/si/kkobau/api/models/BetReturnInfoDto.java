@@ -24,7 +24,8 @@ public class BetReturnInfoDto {
     @Digits(integer = Integer.MAX_VALUE, fraction = 2)
     private BigDecimal taxRate;
 
-    private int taxAmount;
+    @Digits(integer = Integer.MAX_VALUE, fraction = 2)
+    private BigDecimal taxAmount;
 
     public BigDecimal getPossibleReturnAmount() {
         return possibleReturnAmount;
@@ -58,11 +59,11 @@ public class BetReturnInfoDto {
         this.taxRate = taxRate;
     }
 
-    public int getTaxAmount() {
+    public BigDecimal getTaxAmount() {
         return taxAmount;
     }
 
-    public void setTaxAmount(int taxAmount) {
+    public void setTaxAmount(BigDecimal taxAmount) {
         this.taxAmount = taxAmount;
     }
 }

@@ -9,8 +9,11 @@ public class PlayDto {
 
     @NotNull
     private long traderId;
+
     @NotNull
-    private int playedAmount;
+    @Digits(integer = Integer.MAX_VALUE, fraction = 2)
+    private BigDecimal playedAmount;
+
     @NotNull
     @Digits(integer = Integer.MAX_VALUE, fraction = 2)
     private BigDecimal odd;
@@ -23,11 +26,11 @@ public class PlayDto {
         this.traderId = traderId;
     }
 
-    public int getPlayedAmount() {
+    public BigDecimal getPlayedAmount() {
         return playedAmount;
     }
 
-    public void setPlayedAmount(int playedAmount) {
+    public void setPlayedAmount(BigDecimal playedAmount) {
         this.playedAmount = playedAmount;
     }
 
