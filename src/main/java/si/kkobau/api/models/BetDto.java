@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
-public class PlayDto {
+public class BetDto {
 
     @NotNull
     private Long traderId;

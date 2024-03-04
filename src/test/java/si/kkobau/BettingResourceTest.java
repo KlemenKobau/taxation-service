@@ -4,7 +4,7 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
-import si.kkobau.api.models.PlayDto;
+import si.kkobau.api.models.BetDto;
 import si.kkobau.services.BettingService;
 
 import java.math.BigDecimal;
@@ -17,8 +17,8 @@ public class BettingResourceTest implements IResourceTest {
     @InjectMock
     private BettingService bettingService;
 
-    private PlayDto createTestPlay() {
-        PlayDto play = new PlayDto();
+    private BetDto createTestBet() {
+        BetDto play = new BetDto();
         play.setPlayedAmount(new BigDecimal("2.03"));
         play.setOdd(new BigDecimal("2.08"));
         play.setTraderId(1L);
@@ -29,7 +29,7 @@ public class BettingResourceTest implements IResourceTest {
     public void testIntegration() {
         given()
                 .contentType(ContentType.JSON)
-                .body(createTestPlay())
+                .body(createTestBet())
                 .when()
                 .post(getApiRootPath() + "/bets")
                 .then()

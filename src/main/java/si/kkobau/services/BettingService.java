@@ -6,7 +6,7 @@ import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import si.kkobau.api.models.BetReturnInfoDto;
-import si.kkobau.api.models.PlayDto;
+import si.kkobau.api.models.BetDto;
 import si.kkobau.data.entities.Country;
 import si.kkobau.data.entities.TaxationRule;
 import si.kkobau.data.entities.Trader;
@@ -25,8 +25,8 @@ public class BettingService {
         this.traderRepository = traderRepository;
     }
 
-    public @Valid BetReturnInfoDto processPlay(@Valid @NotNull PlayDto playDto) {
-        Trader trader = traderRepository.findByIdOptional(playDto.getTraderId())
+    public @Valid BetReturnInfoDto processBet(@Valid @NotNull BetDto betDto) {
+        Trader trader = traderRepository.findByIdOptional(betDto.getTraderId())
                 .orElseThrow(() -> new NotFoundException("Trader not found"));
         Country country = trader.getCountry();
 
@@ -37,13 +37,13 @@ public class BettingService {
         BetReturnInfoDto betReturnInfoDto = new BetReturnInfoDto();
         betReturnInfoDto.setTaxAmount(taxAmount);
         betReturnInfoDto.setTaxRate(taxRate);
-        BigDecimal beforeTax = playDto.getPlayedAmount().multiply(playDto.getOdd());
+        BigDecimal beforeTax = betDto.getPlayedAmount().multiply(betDto.getOdd());
         betReturnInfoDto.setPossibleReturnAmountBefTax(beforeTax);
 
         BetReturnInfoDto processed = switch (taxationRule) {
             case GENERAL_RATE -> processGeneralRate(betReturnInfoDto);
             case GENERAL_AMOUNT -> processGeneralAmount(betReturnInfoDto);
-            case WINNINGS_RATE -> processWinningsRate(betReturnInfoDto, playDto.getPlayedAmount());
+            case WINNINGS_RATE -> processWinningsRate(betReturnInfoDto, betDto.getPlayedAmount());
             case WINNINGS_AMOUNT -> processWinningsAmount(betReturnInfoDto);
         };
 

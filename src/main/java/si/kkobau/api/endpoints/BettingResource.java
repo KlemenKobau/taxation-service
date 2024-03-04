@@ -7,8 +7,9 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import si.kkobau.api.models.BetReturnInfoDto;
-import si.kkobau.api.models.PlayDto;
+import si.kkobau.api.models.BetDto;
 import si.kkobau.services.BettingService;
 
 @Path("/bets")
@@ -23,7 +24,10 @@ public class BettingResource {
     }
 
     @POST
-    public BetReturnInfoDto play(@Valid @NotNull PlayDto play) {
-        return this.bettingService.processPlay(play);
+    @Operation(
+        summary = "Process a bet"
+    )
+    public BetReturnInfoDto bet(@Valid @NotNull BetDto bet) {
+        return this.bettingService.processBet(bet);
     }
 }

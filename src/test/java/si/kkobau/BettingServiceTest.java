@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import si.kkobau.api.models.BetReturnInfoDto;
-import si.kkobau.api.models.PlayDto;
+import si.kkobau.api.models.BetDto;
 import si.kkobau.data.entities.Country;
 import si.kkobau.data.entities.TaxationRule;
 import si.kkobau.data.entities.Trader;
@@ -44,8 +44,8 @@ public class BettingServiceTest {
         return trader;
     }
 
-    private PlayDto createTestPlay() {
-        PlayDto play = new PlayDto();
+    private BetDto createTestBet() {
+        BetDto play = new BetDto();
         play.setPlayedAmount(new BigDecimal("2.03"));
         play.setOdd(new BigDecimal("2.08"));
         return play;
@@ -56,10 +56,10 @@ public class BettingServiceTest {
         Trader mock = mockTrader(TaxationRule.GENERAL_AMOUNT);
         mock.getCountry().setTaxAmount(new BigDecimal("1.1"));
 
-        PlayDto play = createTestPlay();
+        BetDto play = createTestBet();
         play.setTraderId(mock.getId());
 
-        BetReturnInfoDto ret = bettingService.processPlay(play);
+        BetReturnInfoDto ret = bettingService.processBet(play);
 
         Assertions.assertEquals(0, new BigDecimal("4.22").compareTo(ret.getPossibleReturnAmountBefTax()));
         Assertions.assertEquals(0, new BigDecimal("3.12").compareTo(ret.getPossibleReturnAmountAfterTax()));
@@ -72,10 +72,10 @@ public class BettingServiceTest {
         Trader mock = mockTrader(TaxationRule.GENERAL_RATE);
         mock.getCountry().setTaxRate(new BigDecimal("0.1"));
 
-        PlayDto play = createTestPlay();
+        BetDto play = createTestBet();
         play.setTraderId(mock.getId());
 
-        BetReturnInfoDto ret = bettingService.processPlay(play);
+        BetReturnInfoDto ret = bettingService.processBet(play);
 
         Assertions.assertEquals(0, new BigDecimal("4.22").compareTo(ret.getPossibleReturnAmountBefTax()));
         Assertions.assertEquals(0, new BigDecimal("3.8").compareTo(ret.getPossibleReturnAmountAfterTax()));
@@ -88,10 +88,10 @@ public class BettingServiceTest {
         Trader mock = mockTrader(TaxationRule.WINNINGS_AMOUNT);
         mock.getCountry().setTaxAmount(new BigDecimal("1.1"));
 
-        PlayDto play = createTestPlay();
+        BetDto play = createTestBet();
         play.setTraderId(mock.getId());
 
-        BetReturnInfoDto ret = bettingService.processPlay(play);
+        BetReturnInfoDto ret = bettingService.processBet(play);
 
         Assertions.assertEquals(0, new BigDecimal("4.22").compareTo(ret.getPossibleReturnAmountBefTax()));
         Assertions.assertEquals(0, new BigDecimal("3.12").compareTo(ret.getPossibleReturnAmountAfterTax()));
@@ -104,10 +104,10 @@ public class BettingServiceTest {
         Trader mock = mockTrader(TaxationRule.WINNINGS_RATE);
         mock.getCountry().setTaxRate(new BigDecimal("0.1"));
 
-        PlayDto play = createTestPlay();
+        BetDto play = createTestBet();
         play.setTraderId(mock.getId());
 
-        BetReturnInfoDto ret = bettingService.processPlay(play);
+        BetReturnInfoDto ret = bettingService.processBet(play);
 
         Assertions.assertEquals(0, new BigDecimal("4.22").compareTo(ret.getPossibleReturnAmountBefTax()));
         Assertions.assertEquals(0, new BigDecimal("4").compareTo(ret.getPossibleReturnAmountAfterTax()));
