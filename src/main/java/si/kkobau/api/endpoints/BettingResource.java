@@ -1,6 +1,7 @@
 package si.kkobau.api.endpoints;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -22,7 +23,7 @@ public class BettingResource {
     }
 
     @POST
-    public BetReturnInfoDto play(@Valid PlayDto play) {
+    public BetReturnInfoDto play(@Valid @NotNull PlayDto play) {
         return this.bettingService.processPlay(play);
     }
 }

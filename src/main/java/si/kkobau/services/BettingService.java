@@ -11,6 +11,7 @@ import si.kkobau.data.entities.Country;
 import si.kkobau.data.entities.TaxationRule;
 import si.kkobau.data.entities.Trader;
 import si.kkobau.data.repositories.TraderRepository;
+import si.kkobau.exceptions.NotFoundException;
 
 import java.math.BigDecimal;
 
@@ -25,7 +26,8 @@ public class BettingService {
     }
 
     public @Valid BetReturnInfoDto processPlay(@Valid @NotNull PlayDto playDto) {
-        Trader trader = traderRepository.findById(playDto.getTraderId());
+        Trader trader = traderRepository.findByIdOptional(playDto.getTraderId())
+                .orElseThrow(() -> new NotFoundException("Trader not found"));
         Country country = trader.getCountry();
 
         TaxationRule taxationRule = country.getTaxationRule();

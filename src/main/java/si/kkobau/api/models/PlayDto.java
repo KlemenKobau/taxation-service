@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 public class PlayDto {
 
     @NotNull
-    private long traderId;
+    private Long traderId;
 
     @NotNull
     @Digits(integer = Integer.MAX_VALUE, fraction = 2)
@@ -18,11 +18,11 @@ public class PlayDto {
     @Digits(integer = Integer.MAX_VALUE, fraction = 2)
     private BigDecimal odd;
 
-    public long getTraderId() {
+    public Long getTraderId() {
         return traderId;
     }
 
-    public void setTraderId(long traderId) {
+    public void setTraderId(Long traderId) {
         this.traderId = traderId;
     }
 

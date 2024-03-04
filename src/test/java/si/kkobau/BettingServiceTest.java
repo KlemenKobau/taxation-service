@@ -16,10 +16,11 @@ import si.kkobau.services.BettingService;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 
 @QuarkusTest
-public class BettingServiceTest implements IResourceTest {
+public class BettingServiceTest {
 
     @InjectMock
     private TraderRepository traderRepository;
@@ -37,8 +38,8 @@ public class BettingServiceTest implements IResourceTest {
         trader.setCountry(country);
         country.setTraders(List.of(trader));
 
-        Mockito.when(traderRepository.findById(trader.getId()))
-                .thenReturn(trader);
+        Mockito.when(traderRepository.findByIdOptional(trader.getId()))
+                .thenReturn(Optional.of(trader));
 
         return trader;
     }
