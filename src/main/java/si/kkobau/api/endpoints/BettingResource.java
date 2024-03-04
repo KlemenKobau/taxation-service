@@ -8,8 +8,13 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import si.kkobau.api.models.BetReturnInfoDto;
 import si.kkobau.api.models.BetDto;
+import si.kkobau.exceptions.ExceptionResponse;
 import si.kkobau.services.BettingService;
 
 @Path("/bets")
@@ -26,6 +31,14 @@ public class BettingResource {
     @POST
     @Operation(
         summary = "Process a bet"
+    )
+    @APIResponses(
+        value = {
+                @APIResponse(description = "Processed bet", responseCode = "200"),
+                @APIResponse(description = "Bad request, look at the message", responseCode = "400", content = {
+                        @Content(schema = @Schema(implementation = ExceptionResponse.class))
+                })
+        }
     )
     public BetReturnInfoDto bet(@Valid @NotNull BetDto bet) {
         return this.bettingService.processBet(bet);
