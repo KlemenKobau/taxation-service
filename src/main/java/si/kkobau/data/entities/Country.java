@@ -1,6 +1,6 @@
 package si.kkobau.data.entities;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 
@@ -9,7 +9,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "COUNTRY")
-public class Country extends PanacheEntity {
+public class Country extends PanacheEntityBase {
+
+    @Id
+    @GeneratedValue
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -25,6 +29,14 @@ public class Country extends PanacheEntity {
 
     @OneToMany(mappedBy = "country")
     private List<Trader> traders;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public TaxationRule getTaxationRule() {
         return taxationRule;

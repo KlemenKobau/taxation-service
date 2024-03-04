@@ -2,16 +2,11 @@ package si.kkobau.api.models;
 
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class BetReturnInfoDto {
-
-    // FIXME this field is here for future expansion
-    @Null
-    @Digits(integer = Integer.MAX_VALUE, fraction = 2)
-    private BigDecimal possibleReturnAmount;
 
     @NotNull
     @Digits(integer = Integer.MAX_VALUE, fraction = 2)
@@ -27,12 +22,16 @@ public class BetReturnInfoDto {
     @Digits(integer = Integer.MAX_VALUE, fraction = 2)
     private BigDecimal taxAmount;
 
-    public BigDecimal getPossibleReturnAmount() {
-        return possibleReturnAmount;
-    }
+    public void normalize() {
+        this.possibleReturnAmountBefTax = this.possibleReturnAmountBefTax.setScale(2, RoundingMode.HALF_UP);
+        this.possibleReturnAmountAfterTax = this.possibleReturnAmountAfterTax.setScale(2, RoundingMode.HALF_UP);
 
-    public void setPossibleReturnAmount(BigDecimal possibleReturnAmount) {
-        this.possibleReturnAmount = possibleReturnAmount;
+        if (this.taxRate != null) {
+            this.taxRate = this.taxRate.setScale(2, RoundingMode.HALF_UP);
+        }
+        if (this.taxAmount != null) {
+            this.taxAmount = this.taxAmount.setScale(2, RoundingMode.HALF_UP);
+        }
     }
 
     public BigDecimal getPossibleReturnAmountBefTax() {
