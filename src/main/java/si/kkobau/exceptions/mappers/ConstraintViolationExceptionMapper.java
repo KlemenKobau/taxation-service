@@ -9,6 +9,6 @@ import si.kkobau.exceptions.ExceptionResponse;
 public class ConstraintViolationExceptionMapper {
     @ServerExceptionMapper
     public RestResponse<ExceptionResponse> mapException(ConstraintViolationException x) {
-        return RestResponse.status(Response.Status.NOT_FOUND, new ExceptionResponse(x.getMessage()));
+        return RestResponse.status(Response.Status.BAD_REQUEST, new ExceptionResponse(x.getMessage()));
     }
 }
