@@ -9,6 +9,6 @@ import si.kkobau.exceptions.NotFoundException;
 public class NotFoundExceptionMapper {
     @ServerExceptionMapper
     public RestResponse<ExceptionResponse> mapException(NotFoundException x) {
-        return RestResponse.status(Response.Status.NOT_FOUND, new ExceptionResponse(x.getMessage()));
+        return RestResponse.status(Response.Status.NOT_FOUND, new ExceptionResponse(x.getNotFoundMessage()));
     }
 }

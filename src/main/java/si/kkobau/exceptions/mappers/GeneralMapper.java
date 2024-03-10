@@ -11,7 +11,7 @@ public class GeneralMapper {
 
     @ServerExceptionMapper
     public RestResponse<ExceptionResponse> mapException(Exception x) {
-        LOG.error(x.getMessage());
+        LOG.error(x.getMessage(), x);
 
         return RestResponse.status(Response.Status.INTERNAL_SERVER_ERROR, new ExceptionResponse("Internal server error"));
     }

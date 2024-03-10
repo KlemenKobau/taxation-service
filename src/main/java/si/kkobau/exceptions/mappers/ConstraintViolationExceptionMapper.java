@@ -5,7 +5,6 @@ import jakarta.ws.rs.core.Response;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import si.kkobau.exceptions.ExceptionResponse;
-import si.kkobau.exceptions.NotFoundException;
 
 public class ConstraintViolationExceptionMapper {
     @ServerExceptionMapper
