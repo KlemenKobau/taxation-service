@@ -17,34 +17,19 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 
 @QuarkusTest
-public class BettingResourceTest implements IResourceTest {
+public class BettingResourceTest {
 
     @InjectMock
     private BettingService bettingService;
 
-    private BetDto createTestBet() {
-        BetDto play = new BetDto();
-        play.setPlayedAmount(new BigDecimal("2.03"));
-        play.setOdd(new BigDecimal("2.08"));
-        play.setTraderId(1L);
-        return play;
-    }
-
-    private BetReturnInfoDto createResult() {
-        BetReturnInfoDto infoDto = new BetReturnInfoDto();
-        infoDto.setPossibleReturnAmountBefTax(new BigDecimal("4.22"));
-        infoDto.setPossibleReturnAmountAfterTax(new BigDecimal("4.18"));
-        infoDto.setTaxRate(new BigDecimal("0.01"));
-        infoDto.setTaxAmount(null);
-
-        return infoDto;
-    }
-
     @Test
     public void testIntegration() {
         BetReturnInfoDto result = createResult();
-        Mockito.when(bettingService.processBet(any(BetDto.class)))
-                .thenReturn(result);
+
+        if (useMocks()) {
+            Mockito.when(bettingService.processBet(any(BetDto.class)))
+                    .thenReturn(result);
+        }
 
         given()
                 .contentType(ContentType.JSON)
@@ -68,15 +53,46 @@ public class BettingResourceTest implements IResourceTest {
 
     @Test
     public void testNotFound() {
-        Mockito.when(bettingService.processBet(any(BetDto.class)))
-                .thenThrow(new NotFoundException("Trader not found."));
+        BetDto testBet = createTestBet();
+        testBet.setTraderId(2L);
+
+        if (useMocks()) {
+            Mockito.when(bettingService.processBet(any(BetDto.class)))
+                    .thenThrow(new NotFoundException("Trader not found."));
+        }
 
         given()
                 .contentType(ContentType.JSON)
-                .body(createTestBet())
+                .body(testBet)
                 .when()
                 .post(getApiRootPath() + "/bets")
                 .then()
                 .statusCode(404);
+    }
+
+    protected boolean useMocks() {
+        return true;
+    }
+
+    protected String getApiRootPath() {
+        return "api/v1";
+    }
+
+    protected BetDto createTestBet() {
+        BetDto play = new BetDto();
+        play.setPlayedAmount(new BigDecimal("2.03"));
+        play.setOdd(new BigDecimal("2.08"));
+        play.setTraderId(1L);
+        return play;
+    }
+
+    protected BetReturnInfoDto createResult() {
+        BetReturnInfoDto infoDto = new BetReturnInfoDto();
+        infoDto.setPossibleReturnAmountBefTax(new BigDecimal("4.22"));
+        infoDto.setPossibleReturnAmountAfterTax(new BigDecimal("4.18"));
+        infoDto.setTaxRate(new BigDecimal("0.01"));
+        infoDto.setTaxAmount(null);
+
+        return infoDto;
     }
 }
